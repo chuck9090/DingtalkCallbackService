@@ -19,6 +19,7 @@ namespace DingtalkCallbackService.Controllers
         }
 
         /// <summary>
+        /// 浏览器访问我，查询当前注册的钉钉回调事件列表
         /// 请求Url：/Service/GetSuccessCallbackNameList
         /// </summary>
         /// <returns></returns>
@@ -44,6 +45,7 @@ namespace DingtalkCallbackService.Controllers
         }
 
         /// <summary>
+        /// 给钉钉回调用的API
         /// 请求Url：/Service/Service
         /// </summary>
         /// <returns></returns>
