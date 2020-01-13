@@ -92,7 +92,7 @@ namespace DingtalkCallbackService.Service.Process
                 {
                     if (instance == null)
                     {
-                        SettingCallback instance = new SettingCallback(transmitData);
+                        instance = new SettingCallback(transmitData);
                     }
                 }
                 return instance;
