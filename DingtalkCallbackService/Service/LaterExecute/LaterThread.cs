@@ -1,4 +1,5 @@
-﻿using DingtalkCallbackService.Service.Process;
+﻿using DingtalkCallbackService.Service.Helpers;
+using DingtalkCallbackService.Service.Process;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,19 @@ namespace DingtalkCallbackService.Service.LaterExecute
             {
                 Thread.Sleep(LaterThread.ThreadSleepSecond * 1000);
                 TransmitData td = (TransmitData)o;
-                executeMethod(td);
+
+                LoggerHelper.Info("钉钉回调事件设置Start");
+                try
+                {
+                    executeMethod(td);
+
+                    LoggerHelper.Info("钉钉回调事件设置正常End");
+                }
+                catch (Exception ex)
+                {
+                    LoggerHelper.Error(new Exception("钉钉回调事件设置异常：" + ex.Message));
+                }
+
                 Thread.CurrentThread.Abort();
             });
             thread.Start(transmitData);

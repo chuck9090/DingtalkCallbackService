@@ -16,7 +16,7 @@ namespace DingtalkCallbackService
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             //自动注册回调事件
-            SettingCallback settingCallback = SettingCallback.GetInstance(new TransmitData());
+            SettingCallback.GetInstance(new TransmitData());
         }
     }
 }

@@ -55,9 +55,10 @@ namespace DingtalkCallbackService.Service.Process
 
         private SettingCallback(TransmitData transmitData)
         {
-            this.access_token = this.gettoken(transmitData.appKey, transmitData.appSecret);
+            this.access_token = this.GetToken(transmitData.appKey, transmitData.appSecret);
 
-            bool hasSetting = this.HasSetting();
+            List<string> tagList = new List<string>();
+            bool hasSetting = this.HasSetting(out tagList);
             if (transmitData.callbackTag == null || transmitData.callbackTag.Count == 0)
             {
                 if (hasSetting)
@@ -73,13 +74,44 @@ namespace DingtalkCallbackService.Service.Process
             {
                 if (hasSetting)
                 {
-                    //修改
-                    new LaterExecute.LaterThread(UpdateSetting, transmitData);
+                    if (!SettingCallback.ArrayIsEqual(tagList, transmitData.callbackTag))
+                    {
+                        //修改
+                        new LaterExecute.LaterThread(UpdateSetting, transmitData);
+                    }
                 }
                 else
                 {
                     //新增
                     new LaterExecute.LaterThread(RegisterSetting, transmitData);
+                }
+            }
+        }
+
+        private static bool ArrayIsEqual(List<string> a, List<string> b)
+        {
+            if (a == b)
+            {
+                return true;
+            }
+            else
+            {
+                if (a.Count != b.Count)
+                {
+                    return false;
+                }
+                else
+                {
+                    a.Sort();
+                    b.Sort();
+                    for (int i = 0; i < a.Count; i++)
+                    {
+                        if (a[i] != b[i])
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
                 }
             }
         }
@@ -97,7 +129,7 @@ namespace DingtalkCallbackService.Service.Process
                 }
                 return instance;
             }
-            instance.access_token = instance.gettoken(transmitData.appKey, transmitData.appSecret);
+            instance.access_token = instance.GetToken(transmitData.appKey, transmitData.appSecret);
             return instance;
         }
 
@@ -138,7 +170,7 @@ namespace DingtalkCallbackService.Service.Process
             }
         }
 
-        private string gettoken(string appkey, string appsecret)
+        private string GetToken(string appkey, string appsecret)
         {
             string url = string.Format(CallbackSettingUrl.getTokenUrlTemplate, appkey, appsecret);
             string result = SettingCallback.Request(url, "GET", null);
@@ -155,8 +187,10 @@ namespace DingtalkCallbackService.Service.Process
             }
         }
 
-        private bool HasSetting()
+        private bool HasSetting(out List<string> tagList)
         {
+            tagList = new List<string>();
+
             string url = string.Format(CallbackSettingUrl.callBackSettingTemplate, CallbackSettingUrl.get_call_back, this.access_token);
             string result = SettingCallback.Request(url, "GET", null);
 
@@ -168,6 +202,11 @@ namespace DingtalkCallbackService.Service.Process
                 if (call_back_tag == null)
                 {
                     throw new Exception("查询注册成功的回调事件响应内容中无“call_back_tag”属性！响应内容：" + result);
+                }
+                foreach (JToken jto in call_back_tag)
+                {
+                    string tag = jto + string.Empty;
+                    tagList.Add(tag);
                 }
                 return call_back_tag.Count > 0;
             }

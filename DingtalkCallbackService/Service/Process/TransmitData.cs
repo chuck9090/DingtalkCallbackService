@@ -74,6 +74,7 @@ namespace DingtalkCallbackService.Service.Process
             string tags_Str = this.GetAppSettingValue("callbackTag");
             if (!string.IsNullOrWhiteSpace(tags_Str))
             {
+                tags_Str = tags_Str.Trim();
                 if (tags_Str.IndexOf(',') >= 0)
                 {
                     string[] tags = tags_Str.Split(',');
@@ -162,7 +163,7 @@ namespace DingtalkCallbackService.Service.Process
         }
 
         /// <summary>
-        /// 解密
+        /// 对内容进行解密
         /// </summary>
         /// <returns></returns>
         public JObject Decrypt(string encryptStr)
