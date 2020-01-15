@@ -78,6 +78,9 @@ namespace DingtalkCallbackService.Service.Process
                     {
                         //修改
                         new LaterExecute.LaterThread(UpdateSetting, transmitData);
+                    }else
+                    {
+                        SettingCallback.callbackNameList = tagList;
                     }
                 }
                 else
